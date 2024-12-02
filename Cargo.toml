@@ -3,4 +3,7 @@ name = "advent_of_code"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = ["day01", "day02", "helpers"]
+
 [dependencies]
