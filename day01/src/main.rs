@@ -1,6 +1,6 @@
 use helpers::read_input;
 
-fn calculate_distance(input: &str) -> i32 {
+fn parse_input(input: &str) -> (Vec<i32>, Vec<i32>) {
     let mut left = Vec::new();
     let mut right = Vec::new();
 
@@ -15,10 +15,16 @@ fn calculate_distance(input: &str) -> i32 {
         right.push(nums[1]);
     }
 
-    let mut total = 0;
-
     left.sort();
     right.sort();
+
+    (left, right)
+}
+
+fn calculate_distance(input: &str) -> i32 {
+    let (left, right) = parse_input(input);
+
+    let mut total = 0;
 
     for i in 0..left.len() {
         total += (left[i] - right[i]).abs();
@@ -27,10 +33,25 @@ fn calculate_distance(input: &str) -> i32 {
     total
 }
 
+fn calculate_distance_with_similarity(input: &str) -> i32 {
+    let (left, right) = parse_input(input);
+
+    let mut total = 0;
+
+    for i in 0..left.len() {
+        let occurences = right.iter().filter(|&n| n == &left[i]).count() as i32;
+        total += (left[i] * occurences).abs()
+    }
+
+    total
+}
+
 fn main() {
     let input = read_input(1); // Day 1
-    let total_distance = calculate_distance(&input);
-    println!("Distance: {}", total_distance);
+    let total_distance_p1 = calculate_distance(&input);
+    let total_distance_p2 = calculate_distance_with_similarity(&input);
+    println!("Distance part 1: {}", total_distance_p1);
+    println!("Distance part 2: {}", total_distance_p2);
 }
 
 #[cfg(test)]
@@ -39,9 +60,27 @@ mod tests {
 
     #[test]
     fn test_calculate_distance() {
-        let input = "1 4\n2 3\n5 6";
-        let expected_distance = 5; // Calculated manually: |1-3| + |2-4| = 5
+        let input = "3   4
+4   3
+2   5
+1   3
+3   9
+3   3";
+        let expected_distance = 11;
         let result = calculate_distance(input);
+        assert_eq!(result, expected_distance);
+    }
+
+    #[test]
+    fn test_calculate_distance_with_similarity() {
+        let input = "3   4
+4   3
+2   5
+1   3
+3   9
+3   3";
+        let expected_distance = 31;
+        let result = calculate_distance_with_similarity(input);
         assert_eq!(result, expected_distance);
     }
 }
