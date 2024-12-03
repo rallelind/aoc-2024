@@ -16,16 +16,39 @@ fn extract_and_multiply(input: String) -> i32 {
 }
 
 fn extract_and_multiply_conditionally(input: String) -> i32 {
-    // regex to extract if a do or don't and then the mul or just the mul
+    let mut enabled = true;
     let mut total = 0;
+
+    let re = regex::Regex::new(r"^mul\((\d+),(\d+)\)").unwrap();
+
+    for i in 0..input.len() {
+        if input[i..].starts_with("do()") {
+            enabled = true;
+        }
+
+        if input[i..].starts_with("don't()") {
+            enabled = false;
+        }
+
+        if enabled {
+            let slice = &input[i..];
+            if let Some(cap) = re.captures(slice) {
+                let a: i32 = cap[1].parse().unwrap();
+                let b: i32 = cap[2].parse().unwrap();
+                total += a * b;
+            }
+        }
+    }
 
     total
 }
 
 fn main() {
     let input = read_input(3); // Day 3
-    let result = extract_and_multiply(input);
-    println!("Result: {}", result);
+    let p1_result = extract_and_multiply(input.clone());
+    let p2_result = extract_and_multiply_conditionally(input.clone());
+    println!("Part1 result: {}", p1_result);
+    println!("Part2 result: {}", p2_result);
 }
 
 #[cfg(test)]
