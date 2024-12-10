@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = ["day01", "day02", "day03", "day04", "helpers"]
+members = ["day01", "day02", "day03", "day04", "day05", "helpers"]
 
 [dependencies]
